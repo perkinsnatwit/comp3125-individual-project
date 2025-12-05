@@ -94,3 +94,11 @@ def train_model(X_train, y_train, X_test, y_test, model_instance):
     plt.ylabel('Loss')
     plt.title('Training Loss Over Time')
     plt.show()
+
+def evaluate_test_data(X_test, y_test, model_instance):
+    # Disable back propogation
+    with torch.no_grad():
+        y_eval = model_instance(X_test) # Features from test set, y_eval are the predicted prices
+        criterion = nn.MSELoss()
+        loss = criterion(y_eval, y_test) # Find the loss between predicted prices and actual prices
+        print(f'Test Loss: {loss.item()}')
