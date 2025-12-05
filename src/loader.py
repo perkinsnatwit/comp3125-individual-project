@@ -77,7 +77,7 @@ def train_model(X_train, y_train, X_test, y_test, model_instance):
         loss = criterion(y_pred, y_train)
 
         # Keep track of the loss
-        losses.append(loss.detach().numpy())
+        losses.append(loss.item())
 
         # Print every 10 epochs
         if i % 10 == 0:
@@ -88,9 +88,9 @@ def train_model(X_train, y_train, X_test, y_test, model_instance):
         loss.backward()        # Backward pass: compute gradient of the loss with respect to model
         optimizer.step()       # Update the model parameters based on the gradients
 
-        # Graph loss over time
-        plt.plot(range(epochs), losses)
-        plt.xlabel('Epochs')
-        plt.ylabel('Loss')
-        plt.title('Training Loss Over Time')
-        plt.show()
+    # Graph loss over time
+    plt.plot(range(epochs), losses)
+    plt.xlabel('Epochs')
+    plt.ylabel('Loss')
+    plt.title('Training Loss Over Time')
+    plt.show()
