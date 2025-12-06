@@ -65,7 +65,7 @@ def train_model(X_train, y_train, X_test, y_test, model_instance, learning_rate=
     criterion = nn.MSELoss()
 
     # Choose optimizer, set learning rate
-    optimizer = optim.Adam(model_instance.parameters(), lr=learning_rate)
+    optimizer = optim.Adam(model_instance.parameters(), lr=learning_rate, weight_decay=0.0001)
 
     best_test_loss = float('inf')
     patience_counter = 0
@@ -95,7 +95,7 @@ def train_model(X_train, y_train, X_test, y_test, model_instance, learning_rate=
             y_test_pred = model_instance(X_test)
             test_loss = criterion(y_test_pred, y_test)
             test_losses.append(test_loss.item())
-        """
+
         # Early stopping logic
         if test_loss.item() < best_test_loss:
             best_test_loss = test_loss.item()
@@ -104,15 +104,15 @@ def train_model(X_train, y_train, X_test, y_test, model_instance, learning_rate=
             # torch.save(model_instance.state_dict(), 'best_model.pth')
         else:
             patience_counter += 1
-        """
-        if i % 50 == 0:
+
+        if i % 10 == 0:
             print(f'Epoch {i} | Train Loss: {train_loss.item():.6f} | Test Loss: {test_loss.item():.6f}')
-        """
+
         # Stop if no improvement
         if patience_counter >= patience:
             print(f'Early stopping at epoch {i}')
             break
-        """
+
     # Plot both train and test loss
     plt.figure(figsize=(10, 5))
     plt.plot(range(len(losses)), losses, label='Train Loss')
