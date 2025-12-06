@@ -53,21 +53,21 @@ def load_data(csv_path, test_size=0.2, random_state=42):
     y_train = torch.tensor(y_train, dtype=torch.float32)
     y_test = torch.tensor(y_test, dtype=torch.float32)
 
-    return X_train, X_test, y_train, y_test
+    return X_train, X_test, y_train, y_test, scaler_X, scaler_y
 
-def train_model(X_train, y_train, X_test, y_test, model_instance):
+def train_model(X_train, y_train, X_test, y_test, model_instance, learning_rate=0.01, epochs=500):
 
     # Set the criterion of model to measure the error, how far off the predictions are from the data
     criterion = nn.MSELoss()
 
     # Choose optimizer, set learning rate
-    optimizer = optim.Adam(model_instance.parameters(), lr=0.005)
+    optimizer = optim.Adam(model_instance.parameters(), lr=learning_rate)
 
     """
     Train the car price prediction model.
     """
     # Define epochs
-    epochs = 100
+    epochs = epochs
     losses = []
     for i in range(epochs):
         # Go forward and get predictions
@@ -84,7 +84,7 @@ def train_model(X_train, y_train, X_test, y_test, model_instance):
             print(f'Epoch {i} | Loss: {loss.item()}')
         
         # Back propagation: take the eroor rate of forward pass and feed it back through the model to fine tune weights
-        optimizer.zero_grad()  # Zero the gradients before running the backward pass
+        optimizer.zero_grad()  # Zero the gradients before running the backward pass (accumulated by default)
         loss.backward()        # Backward pass: compute gradient of the loss with respect to model
         optimizer.step()       # Update the model parameters based on the gradients
 
@@ -102,3 +102,26 @@ def evaluate_test_data(X_test, y_test, model_instance):
         criterion = nn.MSELoss()
         loss = criterion(y_eval, y_test) # Find the loss between predicted prices and actual prices
         print(f'Test Loss: {loss.item()}')
+
+def correction(X_test, y_test, model_instance, scaler_y, tolerance=5000):
+    correct = 0
+    with torch.no_grad():
+        y_pred = model_instance(X_test)
+
+        # Inverse-transform to get actual dollar amounts
+        y_pred_unscaled = scaler_y.inverse_transform(y_pred.cpu().numpy())
+        y_test_unscaled = scaler_y.inverse_transform(y_test.cpu().numpy())
+
+        for i in range(len(y_test)):
+            predicted_price = y_pred_unscaled[i][0]
+            actual_price = y_test_unscaled[i][0]
+            difference = abs(predicted_price - actual_price)
+
+            print(f'{i+1}.) Predicted: ${predicted_price:.2f}, Actual: ${actual_price:.2f}, Diff: ${difference:.2f}')
+            
+            # Check if prediction is within tolerance
+            if difference <= tolerance:
+                correct += 1
+    
+    accuracy = (correct / len(X_test)) * 100
+    print(f'\nPredictions within ${tolerance}: {correct}/{len(X_test)} ({accuracy:.1f}%)')
