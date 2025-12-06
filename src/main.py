@@ -13,13 +13,15 @@ def main():
     """
     Configuration Parameters
     """
-    path = 'data/car_price_dataset_medium.csv' # Path to the dataset CSV file
+    path = 'data/car_price_dataset_munged.csv' # Path to the dataset CSV file
 
-    hidden_size = 512 # Size of hidden layers in the model
-    dropout_prob = 0.3 # Dropout probability for regularization
+    hidden_size = 64 # Size of hidden layers in the model
+    dropout_prob = 0.5 # Dropout probability for regularization
 
     lr = 0.0005 # Learning rate for model optimizer
     epoch_num = 500 # Number of training epochs
+
+    tolerance = 20000 # Tolerance for price correction
     
     """
     Entry point for training the car price prediction model.
@@ -43,7 +45,7 @@ def main():
 
     evaluate_test_data(X_test, y_test, model)
 
-    correction(X_test, y_test, model, scaler_y)
+    correction(X_test, y_test, model, scaler_y, tolerance=tolerance)
 
     torch.save(model.state_dict(), 'src/car_price_model.pth')
     print("Model saved to car_price_model.pth")
