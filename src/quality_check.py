@@ -3,11 +3,14 @@ import numpy as np
 
 df = pd.read_csv('data/car_price_dataset_large.csv')
 print("Dataset loaded successfully.")
-print("First 5 rows of the dataset:")
+print(f"Shape: {df.shape}")
+print("\nFirst 5 rows:")
+print(df.head())
 
-# Sort rows by 'Price_USD' in descending order
-df_sorted = df.sort_values(by='Price_USD', ascending=False)
-print("Top 5 most expensive cars:")
-print(df_sorted.head())
-print("\nBottom 5 least expensive cars:")
-print(df_sorted.tail())
+# Convert categorical columns to numbers (same as in loader.py)
+df = pd.get_dummies(df, drop_first=True)
+
+# Calculate correlations
+correlations = df.corr()['Price_USD'].sort_values(ascending=False)
+print("\nFeature correlations with Price_USD:")
+print(correlations)
