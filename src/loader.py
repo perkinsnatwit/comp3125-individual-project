@@ -67,36 +67,60 @@ def train_model(X_train, y_train, X_test, y_test, model_instance, learning_rate=
     # Choose optimizer, set learning rate
     optimizer = optim.Adam(model_instance.parameters(), lr=learning_rate)
 
-    """
-    Train the car price prediction model.
-    """
-    # Define epochs
+    best_test_loss = float('inf')
+    patience_counter = 0
+    patience = 50  
+    
     epochs = epochs
     losses = []
+    test_losses = []
+
     for i in range(epochs):
         # Go forward and get predictions
         y_pred = model_instance(X_train)
 
         # Measure the loss/error (expected to be high at first)
-        loss = criterion(y_pred, y_train)
+        train_loss = criterion(y_pred, y_train)
 
         # Keep track of the loss
-        losses.append(loss.item())
-
-        # Print every 10 epochs
-        if i % 10 == 0:
-            print(f'Epoch {i} | Loss: {loss.item()}')
+        losses.append(train_loss.item())
         
         # Back propagation: take the eroor rate of forward pass and feed it back through the model to fine tune weights
         optimizer.zero_grad()  # Zero the gradients before running the backward pass (accumulated by default)
-        loss.backward()        # Backward pass: compute gradient of the loss with respect to model
+        train_loss.backward()        # Backward pass: compute gradient of the loss with respect to model
         optimizer.step()       # Update the model parameters based on the gradients
 
-    # Graph loss over time
-    plt.plot(range(epochs), losses)
+        # Validation (test loss)
+        with torch.no_grad():
+            y_test_pred = model_instance(X_test)
+            test_loss = criterion(y_test_pred, y_test)
+            test_losses.append(test_loss.item())
+        """
+        # Early stopping logic
+        if test_loss.item() < best_test_loss:
+            best_test_loss = test_loss.item()
+            patience_counter = 0
+            # Save best model?
+            # torch.save(model_instance.state_dict(), 'best_model.pth')
+        else:
+            patience_counter += 1
+        """
+        if i % 50 == 0:
+            print(f'Epoch {i} | Train Loss: {train_loss.item():.6f} | Test Loss: {test_loss.item():.6f}')
+        """
+        # Stop if no improvement
+        if patience_counter >= patience:
+            print(f'Early stopping at epoch {i}')
+            break
+        """
+    # Plot both train and test loss
+    plt.figure(figsize=(10, 5))
+    plt.plot(range(len(losses)), losses, label='Train Loss')
+    plt.plot(range(len(test_losses)), test_losses, label='Test Loss')
     plt.xlabel('Epochs')
     plt.ylabel('Loss')
-    plt.title('Training Loss Over Time')
+    plt.title('Training vs Test Loss')
+    plt.legend()
     plt.show()
 
 def evaluate_test_data(X_test, y_test, model_instance):
