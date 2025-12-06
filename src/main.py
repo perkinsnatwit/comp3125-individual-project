@@ -19,7 +19,7 @@ def main():
     dropout_prob = 0.3 # Dropout probability for regularization
 
     lr = 0.0005 # Learning rate for model optimizer
-    epoch_num = 5000 # Number of training epochs
+    epoch_num = 500 # Number of training epochs
     
     """
     Entry point for training the car price prediction model.
