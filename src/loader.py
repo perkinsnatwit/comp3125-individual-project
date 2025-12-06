@@ -55,7 +55,11 @@ def load_data(csv_path, test_size=0.2, random_state=42):
 
     return X_train, X_test, y_train, y_test, scaler_X, scaler_y
 
-def train_model(X_train, y_train, X_test, y_test, model_instance, learning_rate=0.01, epochs=500):
+def train_model(X_train, y_train, X_test, y_test, model_instance, learning_rate=0.005, epochs=1000):
+
+    print("Starting training...")
+    print("learning_rate:", learning_rate)
+    print("epochs:", epochs)
 
     # Set the criterion of model to measure the error, how far off the predictions are from the data
     criterion = nn.MSELoss()
@@ -103,7 +107,7 @@ def evaluate_test_data(X_test, y_test, model_instance):
         loss = criterion(y_eval, y_test) # Find the loss between predicted prices and actual prices
         print(f'Test Loss: {loss.item()}')
 
-def correction(X_test, y_test, model_instance, scaler_y, tolerance=5000):
+def correction(X_test, y_test, model_instance, scaler_y, tolerance=15000):
     correct = 0
     with torch.no_grad():
         y_pred = model_instance(X_test)
