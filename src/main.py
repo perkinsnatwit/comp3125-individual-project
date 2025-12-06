@@ -15,10 +15,10 @@ def main():
     """
     path = 'data/car_price_dataset_munged.csv' # Path to the dataset CSV file
 
-    hidden_size = 64 # Size of hidden layers in the model
+    hidden_size = 32 # Size of hidden layers in the model
     dropout_prob = 0.5 # Dropout probability for regularization
 
-    lr = 0.0005 # Learning rate for model optimizer
+    lr = 0.00065 # Learning rate for model optimizer
     epoch_num = 500 # Number of training epochs
 
     tolerance = 20000 # Tolerance for price correction
@@ -47,8 +47,8 @@ def main():
 
     correction(X_test, y_test, model, scaler_y, tolerance=tolerance)
 
-    torch.save(model.state_dict(), 'src/car_price_model.pth')
-    print("Model saved to car_price_model.pth")
+    torch.save(model.state_dict(), 'models/car_price_model.pth')
+    print("Model saved to models/car_price_model.pth")
 
 if __name__ == '__main__':
     main()
