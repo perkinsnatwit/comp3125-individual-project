@@ -107,7 +107,7 @@ def create_seat_efficiency(df):
     return df
 
 def munge_data(input_path, output_path):
-    
+
     df = load_data(input_path)
     
     df = create_vehicle_age_feature(df)
@@ -126,8 +126,6 @@ def munge_data(input_path, output_path):
     df = create_seat_efficiency(df)
     
     df.to_csv(output_path, index=False)
-
-    return df
 
 if __name__ == "__main__":
     input_file = Path(__file__).parent.parent / "data" / "car_price_dataset_medium.csv"
