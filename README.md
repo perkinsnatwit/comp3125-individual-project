@@ -8,7 +8,7 @@ This project builds a PyTorch-based neural network to predict car prices using a
 
 ## Dataset
 
-- **Source**: `data/car_price_dataset_medium.csv`
+- **Source**: [`data/car_price_dataset_medium.csv`](https://www.kaggle.com/datasets/prince7489/car-price-prediction-dataset)
 - **Size**: 1000 vehicles
 - **Target Variable**: Price (in USD)
 - **Key Features**: Brand, Model Year, Engine specs, Transmission, Fuel Type, Mileage, Kilometers Driven, and more
