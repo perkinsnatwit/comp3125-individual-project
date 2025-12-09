@@ -5,13 +5,14 @@ import torch.nn as nn
 import torch.optim as optim
 import torch.nn.functional as F
 import matplotlib.pyplot as plt
+import pickle
 from src.model import CarPricePredictor
 from torch.utils.data import Dataset, DataLoader
 from sklearn.preprocessing import StandardScaler
 from sklearn.model_selection import train_test_split
 from pathlib import Path
 
-def load_data(csv_path, test_size=0.2, random_state=42):
+def load_data(csv_path, test_size=0.2, random_state=32):
     df = pd.read_csv(csv_path)
     
     # Identify the target column (handle different possible names)
@@ -28,12 +29,15 @@ def load_data(csv_path, test_size=0.2, random_state=42):
     X = df.drop(columns=[target_column])
     y = df[target_column]
     
-    # Convert categorical (string) columns to numbers using one-hot encoding
-    X = pd.get_dummies(X, drop_first=True)
-    
-    # Convert to numpy arrays
+    # Data is already one-hot encoded, no need for pd.get_dummies
+    # Just convert to numpy arrays
     X = X.values
     y = y.values.reshape(-1, 1)
+    
+    # Save feature column names for later use in prediction
+    feature_columns = df.drop(columns=[target_column]).columns.tolist()
+    with open('models/feature_columns.pkl', 'wb') as f:
+        pickle.dump(feature_columns, f)
     
     # Standardize features
     scaler_X = StandardScaler()
@@ -41,6 +45,12 @@ def load_data(csv_path, test_size=0.2, random_state=42):
     
     scaler_y = StandardScaler()
     y = scaler_y.fit_transform(y)
+    
+    # Save scalers for later use in prediction
+    with open('models/scaler_X.pkl', 'wb') as f:
+        pickle.dump(scaler_X, f)
+    with open('models/scaler_y.pkl', 'wb') as f:
+        pickle.dump(scaler_y, f)
     
     # Split into training and testing sets
     X_train, X_test, y_train, y_test = train_test_split(
