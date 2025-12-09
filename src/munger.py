@@ -127,8 +127,42 @@ def munge_data(input_path, output_path):
     
     df.to_csv(output_path, index=False)
 
+def munge_data_with_encoding(input_path, output_path):
+    """Munge data and apply one-hot encoding for categorical features"""
+    
+    df = load_data(input_path)
+    
+    # Apply all feature engineering
+    df = create_vehicle_age_feature(df)
+    df = create_price_per_year_feature(df)
+    df = create_mileage_category(df)
+    df = create_price_category(df)
+    df = create_engine_power_efficiency(df)
+    df = create_fuel_efficiency_power_ratio(df)
+    df = create_usage_intensity(df)
+    df = create_depreciation_index(df)
+    df = create_engine_displacement_category(df)
+    df = create_power_rating(df)
+    df = create_fuel_type_category(df)
+    df = create_transmission_type_numeric(df)
+    df = create_owner_history_numeric(df)
+    df = create_seat_efficiency(df)
+    
+    # Drop only the original raw categorical columns (not the engineered ones)
+    # Keep Brand, Fuel_Type, Transmission, Owner_Type for one-hot encoding
+    # Also keep the engineered categorical features for one-hot encoding
+    columns_to_drop = []  # Don't drop anything, just encode everything
+    
+    # One-hot encode all categorical columns, drop_first=False to keep all categories
+    df = pd.get_dummies(df, drop_first=False)
+    
+    df.to_csv(output_path, index=False)
+    print(f"Munged data with encoding saved to {output_path}")
+    print(f"Total features: {df.shape[1] - 1} (excluding Price_USD)")  # -1 for Price_USD
+
 if __name__ == "__main__":
     input_file = Path(__file__).parent.parent / "data" / "car_price_dataset_medium.csv"
     output_file = Path(__file__).parent.parent / "data" / "car_price_dataset_munged.csv"
     
-    munge_data(input_file, output_file)
+    # Create the new encoded version
+    munge_data_with_encoding(input_file, Path(__file__).parent.parent / "data" / "car_price_dataset_munged_encoded.csv")
