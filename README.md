@@ -65,32 +65,12 @@ tests/               # Unit tests
 - `Power_Rating` - Power output categorization (Low, Medium, High, Very High)
 - `Fuel_Type_Category` - Broad fuel type grouping (Traditional, Eco-Friendly)
 
-## Installation
-
-1. Clone the repository:
-```bash
-git clone <repo-url>
-cd comp3125-personal-project
-```
-
-2. Create a virtual environment:
-```bash
-python -m venv .venv
-.venv\Scripts\Activate  # Windows
-source .venv/bin/activate  # macOS/Linux
-```
-
-3. Install dependencies:
-```bash
-pip install pandas numpy torch scikit-learn matplotlib
-```
-
 ## Usage
 
 ### 1. Data Preparation
 
 Run the munger to create engineered features from raw data:
-```bash
+```powershell
 python -m src.munger
 ```
 
@@ -99,7 +79,7 @@ This generates `car_price_dataset_munged.csv` with all engineered features.
 ### 2. Train the Model
 
 Execute the main training script:
-```bash
+```powershell
 python -m src.main
 ```
 
@@ -118,6 +98,40 @@ This will:
 - `lr` (default: 0.00065) - Learning rate
 - `epoch_num` (default: 500) - Number of training epochs
 - `tolerance` (default: 20000) - Price tolerance for correction analysis
+
+### 3. Analysis Scripts
+
+#### Correlations Analysis
+Examine Pearson correlation between all numerical features and price:
+```powershell
+python -m src.correlations
+```
+
+Generates `models/correlations_plot.png` showing correlation heatmap.
+
+#### Market Segment Analysis (Budget vs. Luxury)
+Analyze pricing patterns and specifications across market segments:
+```powershell
+python -m src.budget_vs_luxury
+```
+
+This generates:
+- Comparison of Budget, Mid-range, Premium, and Luxury vehicles
+- Analysis of price multipliers, power, efficiency, and transmission adoption
+- Key insights on market preferences by segment
+- Visualization saved to `models/budget_vs_luxury_analysis.png`
+
+#### Efficiency vs. Performance Analysis
+Investigate the relationship between fuel efficiency and engine power:
+```powershell
+python -m src.efficiency_vs_performance
+```
+
+This generates:
+- Statistical analysis (Pearson correlation and p-value) between mileage and power
+- Vehicle segmentation into four quadrants: Eco-Efficient, Performance-Focused, Balanced, and Underpowered
+- Comparative metrics for each segment
+- Visualization saved to `models/efficiency_vs_performance_analysis.png`
 
 ## Model Architecture
 
