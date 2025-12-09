@@ -13,7 +13,7 @@ def main():
     """
     Configuration Parameters
     """
-    path = 'data/car_price_dataset_munged.csv' # Path to the dataset CSV file
+    path = 'data/car_price_dataset_munged_encoded.csv' # Path to the pre-encoded dataset
 
     hidden_size = 32 # Size of hidden layers in the model
     dropout_prob = 0.5 # Dropout probability for regularization
@@ -36,6 +36,7 @@ def main():
     print(f"Price range: ${y_train.min():.2f} - ${y_train.max():.2f}")
 
     input_features = X_train.shape[1]
+    print(f"Input features: {input_features}")
 
     model = CarPricePredictor(input_features=input_features, hidden_size=hidden_size, dropout_prob=dropout_prob)   
 
@@ -49,6 +50,7 @@ def main():
 
     torch.save(model.state_dict(), 'models/car_price_model.pth')
     print("Model saved to models/car_price_model.pth")
+
 
 if __name__ == '__main__':
     main()
