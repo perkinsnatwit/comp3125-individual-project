@@ -1,7 +1,6 @@
 *.pth
 *.joblib
-*.pkl
-models/
+*.pklS
 __pycache__/
 .venv/
 *.pyc
